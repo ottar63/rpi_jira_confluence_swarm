@@ -20,8 +20,8 @@ services:
             - "8080:8080"
         deploy:
             replicas: 1
-            placement:
-                constraints: [node.role == manager ]
+#            placement:
+#                constraints: [node.role == manager ]
         networks:
             - atlassian
         container_name: jira
@@ -29,6 +29,24 @@ services:
             - mysql57
         volumes:
             - "/data/atlassian/jira_home:/var/atlassian/jira"
+        depends_on:
+            - "mysql57"
+        #entrypoint: bash
+    confluence:
+        image: ottar63/rpi-mysql-confluence
+        ports:
+            - "8090:8090"
+        deploy:
+            replicas: 1
+            placement:
+                constraints: [node.role == worker ]
+        networks:
+            - atlassian
+        container_name: confluence
+        links:
+            - mysql57
+        volumes:
+            - "/data/atlassian/confluence_home:/var/atlassian/confluence"
         depends_on:
             - "mysql57"
         #entrypoint: bash
